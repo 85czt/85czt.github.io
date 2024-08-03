@@ -1,0 +1,34 @@
+body {
+  background: #cfe2f3;
+  margin:15px;
+  font-family: sans-serif;
+}
+p {
+  /* font-family: sans-serif; */
+  color: black;
+  font-size: 16px;
+}
+h2 {
+  font-weight:normal;
+  /* font-family: sans-serif; */
+  /*  background: #d9d9ff;*/
+  color: #500050;
+  letter-spacing: 1px;
+
+}
+h3{
+  font-size: 20px;
+  /* font-family: sans-serif; */
+}
+h4{
+/*  background-color: #d6f2ff;*/
+  font-size:18px;
+  /* font-family: sans-serif; */
+  font-weight: 500;
+}
+h5{
+  font-size:18px;
+  /* font-family: sans-serif; */
+  font-weight: 500;
+  letter-spacing: 1px;
+}
