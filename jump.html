@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>URL jumper</title>
+    <link rel="stylesheet" href="/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <style>
+        /*p{
+            font-weight: normal;
+        }*/
+        body{
+            width:800px;
+        }
+    </style>
+    <script>
+        // ai is so useful
+        function toggleVisibility(id) {
+            var element = document.getElementById(id);
+            if (element.style.display === "block") {
+                element.style.display = "none";
+            } else {
+                element.style.display = "block";
+            }
+        }
+    </script>
+</head>
+<body>
+    <p><a href="/">回主页Home</a></p>
+    <button onclick="toggleVisibility('whatisthis')">...</button>
+
+    <div id="whatisthis" style="display: none; overflow: hidden;">
+      <p>What is this 这是啥</p>
+      <p>This is a jumper script, you enter any url inside the box and click ok,
+        it will take you to that site. The purpose is, I think no purpose now :&rpar;
+        <br>在框里输一个网址，按ok就可以被跳转到那个网址。并没有目的，可以说是闲的。
+      </p>
+      <p>this script is actually written by AI... I haven't learned JS yet
+        <br>这玩意其实是ai写的，我还没学javascript呢
+      </p>
+    </div>
+
+    <hr>
+
+    <div style="transform: scale(1.5);  transform-origin: top left; ">
+    <input type="text" id="urlInput" placeholder="Enter URL here">
+    <button onclick="redirectToUrl()">OK</button>
+    </div>
+    <script>
+        function redirectToUrl() {
+            var url = document.getElementById('urlInput').value;
+            if (url) {
+                // Simple validation for a somewhat proper URL
+                if (!url.match(/^[a-zA-Z]+:\/\//)) {
+                    url = 'http://' + url;
+                }
+                window.location.href = url;
+            }
+        }
+    </script>
+</body>
+</html>
