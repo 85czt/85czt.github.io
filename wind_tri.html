@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>wind triangle calculator</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background: #ffffff;
+            margin: 40px;
+        }
+
+        .container {
+            max-width: 420px;
+            margin: auto;
+            padding: 2em;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-top: 1em;
+            font-weight: 500;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 7px;
+            font-size: 1em;
+            margin-top: 0.3em;
+        }
+
+        .result {
+            margin-top: 2em;
+            font-size: 1.1em;
+            background: #eef;
+            padding: 1em;
+            border-radius: 10px;
+        }
+
+        .out {
+            font-weight: bold;
+            color: #265;
+        }
+
+        .desc {
+            color: #678;
+            font-size: 0.97em;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <label>
+            Wind Direction (° <span title="Direction from which wind blows">from</span>):
+            <input type="number" id="windDir" value="270" min="0" max="359">
+        </label>
+        <label>
+            Wind Speed (kts):
+            <input type="number" id="windSpeed" value="20" min="0">
+        </label>
+        <label>
+            True Airspeed (TAS) (kts):
+            <input type="number" id="tas" value="100" min="0">
+        </label>
+        <label>
+            Desired Ground Track / Course (°):
+            <input type="number" id="course" value="270" min="0" max="359">
+        </label>
+
+        <div class="result" id="result">
+            <span class="out">Heading to fly: ...</span><br>
+            <span class="out">Groundspeed: ...</span>
+        </div>
+        <div class="desc" style="margin-top:1em;">All angles are degrees true.</div>
+    </div>
+    <script>
+        function toRad(deg) { return deg * Math.PI / 180; }
+        function toDeg(rad) { return rad * 180 / Math.PI; }
+        function norm360(deg) { return (deg + 360) % 360; }
+
+        function update() {
+            let ws = parseFloat(document.getElementById('windSpeed').value) || 0;
+            let wd = parseFloat(document.getElementById('windDir').value) || 0;
+            let tas = parseFloat(document.getElementById('tas').value) || 0;
+            let course = parseFloat(document.getElementById('course').value) || 0;
+
+            let windRad = toRad(wd);
+            let courseRad = toRad(course);
+
+            // Wind vector (x, y)
+            let wx = ws * Math.sin(windRad);
+            let wy = ws * Math.cos(windRad);
+
+            // GS vector = GS * (sin(course), cos(course))
+            // TAS vector = Heading (unknown) * (sin(heading), cos(heading))
+            // GS = TAS + Wind
+
+            // To solve: find Heading so that (TAS vector + Wind vector) aligns with desired Course (track)
+            // Compute wind correction angle (WCA)
+            let sinWCA = (ws * Math.sin(windRad - courseRad)) / tas;
+            let wcaDeg, headingDeg, gs;
+            let resultElem = document.getElementById('result');
+
+            if (Math.abs(sinWCA) > 1) {
+                resultElem.innerHTML = '<span class="out" style="color:#a00">Wind too strong for given TAS/track!</span>';
+                return;
+            }
+            let wcaRad = Math.asin(sinWCA);
+            wcaDeg = toDeg(wcaRad);
+            headingDeg = norm360(course + wcaDeg);
+
+            // Now get groundspeed
+            gs = tas * Math.cos(wcaRad) + ws * Math.cos(windRad - courseRad);
+
+            // Format to one decimal
+            headingDeg = headingDeg.toFixed(1);
+            gs = gs.toFixed(1);
+            wcaDeg = wcaDeg.toFixed(1);
+
+            resultElem.innerHTML = `
+        <span class="out">Heading to fly: ${headingDeg}°</span> (WCA: ${wcaDeg}°)<br>
+        <span class="out">Expected Groundspeed: ${gs} kts</span>
+      `;
+        }
+
+        document.querySelectorAll('input').forEach(inp => {
+            inp.addEventListener('input', update);
+        });
+
+        // Initial update
+        update();
+    </script>
+</body>
+
+</html>
