@@ -60,19 +60,19 @@
 
         <label>
             Wind Direction (° <span title="Direction from which wind blows">from</span>):
-            <input type="number" id="windDir" value="270" min="0" max="359">
+            <input type="number" id="windDir" value="200" min="0" max="359">
         </label>
         <label>
             Wind Speed (kts):
-            <input type="number" id="windSpeed" value="20" min="0">
+            <input type="number" id="windSpeed" value="7" min="0">
         </label>
         <label>
             True Airspeed (TAS) (kts):
-            <input type="number" id="tas" value="100" min="0">
+            <input type="number" id="tas" value="78" min="0">
         </label>
         <label>
             Desired Ground Track / Course (°):
-            <input type="number" id="course" value="270" min="0" max="359">
+            <input type="number" id="course" value="279" min="0" max="359">
         </label>
 
         <div class="result" id="result">
@@ -92,7 +92,7 @@
             let tas = parseFloat(document.getElementById('tas').value) || 0;
             let course = parseFloat(document.getElementById('course').value) || 0;
 
-            let windRad = toRad(wd);
+            let windRad = toRad(wd + 180);
             let courseRad = toRad(course);
 
             // Wind vector (x, y)
@@ -114,7 +114,7 @@
                 return;
             }
             let wcaRad = Math.asin(sinWCA);
-            wcaDeg = toDeg(wcaRad);
+            wcaDeg = - toDeg(wcaRad);
             headingDeg = norm360(course + wcaDeg);
 
             // Now get groundspeed
