@@ -59,20 +59,20 @@
     <div class="container">
 
         <label>
-            Wind Direction (° <span title="Direction from which wind blows">from</span>):
-            <input type="number" id="windDir" min="0" max="359">
+            Wind Direction (° from):
+            <input type="number" id="windDir" value="" min="0" max="359">
         </label>
         <label>
             Wind Speed (kts):
-            <input type="number" id="windSpeed" min="0">
+            <input type="number" id="windSpeed" value="" min="0">
         </label>
         <label>
             True Airspeed (TAS) (kts):
-            <input type="number" id="tas" min="0">
+            <input type="number" id="tas" value="" min="0">
         </label>
         <label>
             Desired Ground Track / Course (°):
-            <input type="number" id="course" min="0" max="359">
+            <input type="number" id="course" value="" min="0" max="359">
         </label>
 
         <div class="result" id="result">
@@ -96,39 +96,34 @@
             let courseRad = toRad(course);
 
             // Wind vector (x, y)
-            let wx = ws * Math.sin(windRad);
-            let wy = ws * Math.cos(windRad);
-
-            // GS vector = GS * (sin(course), cos(course))
-            // TAS vector = Heading (unknown) * (sin(heading), cos(heading))
-            // GS = TAS + Wind
+            //let weast = ws * Math.sin(windRad);
+            //let wnorth = ws * Math.cos(windRad);
 
             // To solve: find Heading so that (TAS vector + Wind vector) aligns with desired Course (track)
             // Compute wind correction angle (WCA)
             let sinWCA = (ws * Math.sin(windRad - courseRad)) / tas;
-            let wcaDeg, headingDeg, gs;
-            let resultElem = document.getElementById('result');
-
             if (Math.abs(sinWCA) > 1) {
                 resultElem.innerHTML = '<span class="out" style="color:#a00">Wind too strong for given TAS/track!</span>';
                 return;
             }
+            
             let wcaRad = Math.asin(sinWCA);
-            wcaDeg = - toDeg(wcaRad);
-            headingDeg = norm360(course + wcaDeg);
+            let wcaDeg = toDeg(wcaRad);
+            let headingDeg = norm360(course + wcaDeg); // minus???
+            
 
             // Now get groundspeed
-            gs = tas * Math.cos(wcaRad) + ws * Math.cos(windRad - courseRad);
+            let gs = tas * Math.cos(wcaRad) + ws * Math.cos(windRad - courseRad);
 
             // Format to one decimal
             headingDeg = headingDeg.toFixed(1);
             gs = gs.toFixed(1);
             wcaDeg = wcaDeg.toFixed(1);
-
-            resultElem.innerHTML = `
-        <span class="out">Heading to fly: ${headingDeg}°</span> (WCA: ${wcaDeg}°)<br>
-        <span class="out">Expected Groundspeed: ${gs} kts</span>
-      `;
+            
+            document.getElementById('result').innerHTML = `
+                <span class="out">Heading to fly: ${headingDeg}°</span> (WCA: ${wcaDeg}°)<br>
+                <span class="out">Expected Groundspeed: ${gs} kts</span>
+            `;
         }
 
         document.querySelectorAll('input').forEach(inp => {
