@@ -41,7 +41,7 @@ noStroke();
 
 // Create your variables here
 var score = 0;
-var speed = 5;
+var speed = 8;
 
 var dead=false;
 
@@ -337,7 +337,7 @@ function die(){
       gameover.visible=false;
       dead=false;
       score=0;
-      speed=10;
+      speed=8;
       dino.setAnimation("dino");
       dino.y=310;
       cactus.play();
