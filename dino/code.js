@@ -41,7 +41,7 @@ noStroke();
 
 // Create your variables here
 var score = 0;
-var speed = 10;
+var speed = 5;
 
 var dead=false;
 
